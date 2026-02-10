@@ -1,7 +1,5 @@
 {
   "name": "my-json-api",
-  "compatibility_date": "2026-02-10",
-  "assets": {
-    "directory": "./"
-  }
+  "main": "src/index.js",
+  "compatibility_date": "2026-02-10"
 }
