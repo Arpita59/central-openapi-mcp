@@ -65,9 +65,7 @@
             "required": true,
             "description": "The course ID.",
             "schema": {
-              "type": "integer",
-              "minLength": 1,
-              "maxLength": 10
+              "type": "integer"
             }
           }
         ],
@@ -148,9 +146,7 @@
             "in": "query",
             "description": "Catalog number start (inclusive).",
             "schema": {
-              "type": "integer",
-              "minLength": 1,
-              "maxLength": 3
+              "type": "integer"
             }
           },
           {
@@ -158,9 +154,7 @@
             "in": "query",
             "description": "Catalog number end (inclusive).",
             "schema": {
-              "type": "integer",
-              "minLength": 1,
-              "maxLength": 3
+              "type": "integer"
             }
           },
           {
