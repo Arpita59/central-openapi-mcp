@@ -1,0 +1,1073 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Data Potluck API's",
+    "description": "Our API allows users to effortlessly explore a wide range of courses offered by various Colleges and Schools at Arizona State University. With intuitive endpoints and comprehensive filters, users can easily navigate through different academic programs, view course details, and access essential information, empowering them to make informed decisions about their educational journey at ASU.",
+    "contact": {
+      "email": "customerservice@asu.edu"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.myasuplat-dpl.asu.edu",
+      "variables": {
+        "environment": {
+          "default": "api",
+          "description": "Environment to use for the API calls",
+          "enum": [
+            "api",
+            "mock"
+          ]
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "Courses",
+      "description": "Operations related to courses"
+    }
+  ],
+  "paths": {
+    "/api/course/{strm}/{courseId}": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "Get course details by CourseID and term",
+        "description": "Returns details of a specific course for a given term and courseId.",
+        "parameters": [
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include additional information like equivalent courses.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "equivalentCourses"
+              ]
+            },
+            "example": "equivalentCourses"
+          },
+          {
+            "name": "strm",
+            "in": "path",
+            "required": true,
+            "description": "The term code.",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 2247
+          },
+          {
+            "name": "courseId",
+            "in": "path",
+            "required": true,
+            "description": "The course ID.",
+            "schema": {
+              "type": "integer",
+              "minLength": 1,
+              "maxLength": 10
+            },
+            "example": 104171
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "../../schemas/course.json"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Course not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message for course not found.",
+                      "example": "Course not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message for internal server error",
+                      "example": "Internal server error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/course/{strm}/subject/{subject}": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "Get courses by subject and catalog number range",
+        "description": "Returns courses for a subject within a specified catalog number range.",
+        "parameters": [
+          {
+            "name": "strm",
+            "in": "path",
+            "required": true,
+            "description": "The term code.",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 2247
+          },
+          {
+            "name": "subject",
+            "in": "path",
+            "required": true,
+            "description": "The subject code.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "CSE"
+          },
+          {
+            "name": "catalogNumberStart",
+            "in": "query",
+            "description": "Catalog number start (inclusive).",
+            "schema": {
+              "type": "integer",
+              "minLength": 1,
+              "maxLength": 3
+            },
+            "example": 100
+          },
+          {
+            "name": "catalogNumberEnd",
+            "in": "query",
+            "description": "Catalog number end (inclusive).",
+            "schema": {
+              "type": "integer",
+              "minLength": 1,
+              "maxLength": 3
+            },
+            "example": 200
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include additional information like equivalent courses.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "equivalentCourses"
+              ]
+            },
+            "example": "equivalentCourses"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "../../schemas/course.json"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Courses not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message for courses not found.",
+                      "example": "Courses not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message for internal server error.",
+                      "example": "Internal server error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/codeset/acad-plans": {
+      "get": {
+        "tags": [
+          "Academic-plan"
+        ],
+        "summary": "Get academic plan details by acadPlanCode",
+        "description": "Returns details of a specific academic plan by its code.",
+        "parameters": [
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include additional information like detail, * or specific field names.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "detail",
+                "*"
+              ]
+            },
+            "example": "detail"
+          },
+          {
+            "name": "acadPlanCode",
+            "in": "path",
+            "required": true,
+            "description": "The academic plan code.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "9HOHONALL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/academicPlan.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Academic plan not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message for academic plan not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message for internal server error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/codeset/acad-plan/{acadPlanCode}": {
+      "get": {
+        "tags": [
+          "Academic-plan"
+        ],
+        "summary": "Get academic plans with filters",
+        "description": "Retrieves academic plans with optional filters for ownedByCollege, ownedByDepartment, acadPlanType, degreeType, include, and filter.",
+        "parameters": [
+          {
+            "name": "ownedByCollege",
+            "in": "query",
+            "description": "Filter by owning college academic organization.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "CHO"
+          },
+          {
+            "name": "ownedByDepartment",
+            "in": "query",
+            "description": "Filter by owning department academic organization.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "CHO"
+          },
+          {
+            "name": "acadPlanType",
+            "in": "query",
+            "description": "Filter by academic plan type code.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "SPU"
+          },
+          {
+            "name": "degreeType",
+            "in": "query",
+            "description": "Filter by degree type (UG, UGCM, GR, OTHR).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "UG"
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include additional information like detail, degreeDescriptionShort, etc.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Filter criteria for active plans.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "../../schemas/academicPlan.json"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Plans not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message for plans not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message for internal server error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Course": {
+        "type": "object",
+        "properties": {
+          "strm": {
+            "type": "string",
+            "description": "The term code.",
+            "example": "2247"
+          },
+          "courseId": {
+            "type": "string",
+            "description": "The course ID.",
+            "example": "104171"
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "Timestamp of the response.",
+            "example": 1631533200
+          },
+          "courseOfferNumber": {
+            "type": "string",
+            "description": "The course offer number.",
+            "example": "1"
+          },
+          "subject": {
+            "type": "string",
+            "description": "The subject of the course.",
+            "example": "CSE"
+          },
+          "catalogNumber": {
+            "type": "integer",
+            "description": "The catalog number of the course.",
+            "example": 100
+          },
+          "primaryOwningDepartmentAcadOrg": {
+            "type": "string",
+            "description": "The primary owning department academic organization.",
+            "example": "CSE"
+          },
+          "primaryOwningParentCollegeAcadOrg": {
+            "type": "string",
+            "description": "The primary owning parent college academic organization.",
+            "example": "CES"
+          },
+          "splitOwners": {
+            "type": "string",
+            "description": "Split owners information.",
+            "example": "CSE",
+            "nullable": true
+          },
+          "primaryOwningDepartmentDescription": {
+            "type": "string",
+            "description": "Description of the primary owning department.",
+            "example": "Computer Science and Engineering Program"
+          },
+          "primaryOwningParentCollegeDescription": {
+            "type": "string",
+            "description": "Description of the primary owning parent college.",
+            "example": "Ira A. Fulton Schools of Engineering"
+          },
+          "catalogPrint": {
+            "type": "boolean",
+            "description": "Indicates if the course is printable in the catalog.",
+            "example": true
+          },
+          "acadCareerCode": {
+            "type": "string",
+            "description": "Academic career code.",
+            "example": "UGRD"
+          },
+          "description": {
+            "type": "string",
+            "description": "Short description of the course.",
+            "example": "Principles of Programming with C++"
+          },
+          "fullDescription": {
+            "type": "string",
+            "description": "Full description of the course.",
+            "example": "Principles of problem solving using C++, algorithm design, structured programming, fundamental algorithms and techniques, and computer systems concepts. Social and ethical responsibility."
+          },
+          "approvedUnitsMinimum": {
+            "type": "integer",
+            "description": "Minimum approved units for the course.",
+            "format": "int32",
+            "example": 3
+          },
+          "approvedUnitsMaximum": {
+            "type": "number",
+            "description": "Maximum approved units for the course.",
+            "example": 3
+          },
+          "defaultUnitsMinimum": {
+            "type": "number",
+            "description": "Minimum default units for the course.",
+            "example": 3
+          },
+          "defaultUnitsMaximum": {
+            "type": "number",
+            "description": "Maximum default units for the course.",
+            "example": 3
+          },
+          "academicProgressUnits": {
+            "type": "number",
+            "description": "Academic progress units for the course.",
+            "example": 3
+          },
+          "financialAidProgressUnits": {
+            "type": "number",
+            "description": "Financial aid progress units for the course.",
+            "example": 3
+          },
+          "courseRepeatable": {
+            "type": "boolean",
+            "description": "Indicates if the course is repeatable.",
+            "example": false
+          },
+          "totalCompletionsAllowed": {
+            "type": "integer",
+            "description": "Total completions allowed for the course.",
+            "example": 1
+          },
+          "totalUnitsAllowed": {
+            "type": "number",
+            "description": "Total units allowed for the course.",
+            "example": 3
+          },
+          "allowMultipleEnrollmentsInTerm": {
+            "type": "boolean",
+            "description": "Indicates if multiple enrollments are allowed in a term.",
+            "example": false
+          },
+          "requirementDesignationCode": {
+            "type": "string",
+            "description": "Requirement designation code.",
+            "example": "GE48"
+          },
+          "requirementDesignationDescription": {
+            "type": "string",
+            "description": "Requirement designation description.",
+            "example": "QTRS OR CS"
+          },
+          "requirementGroupCode": {
+            "type": "number",
+            "description": "Requirement group code.",
+            "example": 1,
+            "nullable": true
+          },
+          "requirementGroupDescription": {
+            "type": "string",
+            "description": "Requirement group description.",
+            "example": "Group 1",
+            "nullable": true
+          },
+          "greatestTermOffered": {
+            "type": "string",
+            "description": "Greatest term in which the course is offered.",
+            "example": "2251"
+          },
+          "equivalentCourseGroupId": {
+            "type": "number",
+            "description": "Equivalent course group ID.",
+            "example": 1,
+            "nullable": true
+          },
+          "gradingBasisCode": {
+            "type": "string",
+            "description": "Grading basis code.",
+            "example": "OPT"
+          },
+          "gradingBasisDescription": {
+            "type": "string",
+            "description": "Grading basis description.",
+            "example": "Student Option"
+          },
+          "topics": {
+            "type": "array",
+            "description": "Topics information.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "totalCompletionsAllowed": {
+                  "type": "integer",
+                  "description": "Total completions allowed for the topic.",
+                  "example": 1
+                },
+                "description": {
+                  "type": "string",
+                  "description": "topic description",
+                  "example": "Introduction to Programming I"
+                },
+                "totalUnitsAllowed": {
+                  "type": "integer",
+                  "description": "Total units allowed for the topic.",
+                  "example": 3
+                },
+                "topicLinkId": {
+                  "type": "integer",
+                  "description": "link id for the topic",
+                  "example": 109586
+                },
+                "courseRepeatable": {
+                  "type": "boolean",
+                  "description": "Indicates if the topic is repeatable.",
+                  "example": false
+                }
+              }
+            },
+            "nullable": true
+          },
+          "components": {
+            "type": "array",
+            "description": "Components of the course.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Component code.",
+                  "example": "LEC"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Component description.",
+                  "example": "Lecture"
+                },
+                "graded": {
+                  "type": "boolean",
+                  "description": "Indicates if the component is graded.",
+                  "example": true
+                },
+                "optional": {
+                  "type": "boolean",
+                  "description": "Indicates if the component is optional.",
+                  "example": false
+                },
+                "primary": {
+                  "type": "boolean",
+                  "description": "Indicates if the component is primary.",
+                  "example": true
+                }
+              }
+            }
+          },
+          "equivalentCourses": {
+            "type": "array",
+            "description": "Equivalent courses information.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "strm": {
+                  "type": "string",
+                  "description": "The term code.",
+                  "example": "2247"
+                },
+                "courseId": {
+                  "type": "string",
+                  "description": "The course ID.",
+                  "example": "104171"
+                },
+                "courseOfferNumber": {
+                  "type": "string",
+                  "description": "The course offer number.",
+                  "example": "1"
+                },
+                "subject": {
+                  "type": "string",
+                  "description": "The subject of the course.",
+                  "example": "CSE"
+                },
+                "catalogNumber": {
+                  "type": "integer",
+                  "description": "The catalog number of the course.",
+                  "example": 100
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the course.",
+                  "example": "Principles of Programming with C++"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AcademicPlan": {
+        "type": "object",
+        "properties": {
+          "acadPlanDescription": {
+            "type": "string",
+            "description": "Brief description/title of this academic plan, sourced from best of 3 different data fields, in order of preference"
+          },
+          "acadPlanMarketingDescription": {
+            "type": "string",
+            "description": "Same as acadPlanDescription except with a different order of data field preference"
+          },
+          "acadPlanTranscriptDescription": {
+            "type": "string",
+            "description": "Brief description/title used for the transcript. Not populated for all plans."
+          },
+          "fullDescription": {
+            "type": "string",
+            "description": "Explanation (multiple sentences; paragraph format) of this academic plan. Contains HTML formatting."
+          },
+          "acadPlanType": {
+            "type": "string",
+            "description": "Academic plan type code"
+          },
+          "acadPlanTypeDescription": {
+            "type": "string",
+            "description": "Description of academic plan type"
+          },
+          "acadProgramCode": {
+            "type": "string",
+            "description": "Academic program code"
+          },
+          "emailAddr": {
+            "type": "string",
+            "description": "Contact email address for plan"
+          },
+          "emailAddrOnline": {
+            "type": "string",
+            "description": "Alternate contact email address for plan for ASU Online purposes"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Contact phone number for plan"
+          },
+          "languageRequired": {
+            "type": "string",
+            "description": "Indicates if second language coursework is required to complete this plan"
+          },
+          "mathIntensityCode": {
+            "type": "string",
+            "description": "Math Intensity Category (eg. General, Moderate, Substantial) - represents a measure of the number and academic rigor of math courses required for this plan"
+          },
+          "mathIntensityDescription": {
+            "type": "string",
+            "description": "Description of mathIntensityCode value"
+          },
+          "mathRequired": {
+            "type": "string",
+            "description": "Math is required to complete this plan"
+          },
+          "firstMathCourseRequired": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "courseId": {
+                  "type": "string",
+                  "description": "First required math course - course ID"
+                },
+                "subject": {
+                  "type": "string",
+                  "description": "First required math course - subject"
+                },
+                "catalogNumber": {
+                  "type": "string",
+                  "description": "First required math course - catalog number"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "First required math course"
+                }
+              }
+            }
+          },
+          "firstMathCourseRequiredSupplementalText": {
+            "type": "string",
+            "description": "First required math course - supplemental text (includes HTML formatting)"
+          },
+          "additionalFee": {
+            "type": "string",
+            "description": "This plan has an additional fee"
+          },
+          "careerOpportunities": {
+            "type": "string",
+            "description": "Career opportunity information. Contains HTML formatting."
+          },
+          "professionalLicensureStandardText": {
+            "type": "string",
+            "description": "Professional licensure standard text (includes HTML formatting. Warning: malformed HTML)"
+          },
+          "professionalLicensureAdditionalText": {
+            "type": "string",
+            "description": "Professional licensure additional text (includes HTML formatting)"
+          },
+          "marketingText": {
+            "type": "string",
+            "description": "Supplemental marketing blurb / sales pitch - used to manipulate SEO. (Includes HTML formatting)"
+          },
+          "globalExperienceText": {
+            "type": "string",
+            "description": "Supplemental text for global perspective of plan (Includes HTML formatting)"
+          },
+          "globalDegreeText": {
+            "type": "string",
+            "description": "Supplemental text for global degree applicability of plan (Includes HTML formatting)"
+          },
+          "admissionRequirementsText": {
+            "type": "string",
+            "description": "Admission requirements text (Includes HTML formatting)"
+          },
+          "transferAdmissionRequirementsText": {
+            "type": "string",
+            "description": "Transfer admission requirements text (Includes HTML formatting)"
+          },
+          "activeInDegreeSearch": {
+            "type": "string",
+            "description": "Indicates if this plan should be displayed in degree search"
+          },
+          "applicantsMustChooseSecondMajor": {
+            "type": "string",
+            "description": "Indicates if an applicant needs to select a second major (this major has higher-level requirements)"
+          },
+          "campusesOffered": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "campusCode": {
+                  "type": "string"
+                },
+                "wue": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "List of campuses where this plan is offered for instruction"
+          },
+          "degreeDescriptionShort": {
+            "type": "string",
+            "description": "Short degree description (eg. BS)"
+          },
+          "degreeDescriptionLong": {
+            "type": "string",
+            "description": "Long degree description (eg. Bachelor of Science)"
+          },
+          "degreeDescriptionText": {
+            "type": "string",
+            "description": "Text information describing the degree (eg. An undergraduate degree that advances the understanding of...)"
+          },
+          "degreeEducationLevel": {
+            "type": "string",
+            "description": "Education level code associated with this degree."
+          },
+          "planKeywords": {
+            "type": "string",
+            "description": "Set of search keywords for this plan"
+          },
+          "videoUrl": {
+            "type": "string",
+            "description": "URL of marketing video for plan"
+          },
+          "academicOfficeLocation": {
+            "type": "string",
+            "description": "Academic office location"
+          },
+          "academicOfficeUrl": {
+            "type": "string",
+            "description": "Academic office URL"
+          },
+          "customText": {
+            "type": "string",
+            "description": "Supplemental optional text that displays in degree search near the top; typically used to note plans that are active but no longer accepting applications or new students. Note: sometimes contains (occasionally malformed) HTML"
+          },
+          "degreeRequirements": {
+            "type": "string",
+            "description": "Text describing degree requirements for graduate degrees. Note: includes HTML formatting"
+          },
+          "minorCourseRequirements": {
+            "type": "string",
+            "description": "Text describing course requirements for minors. Warn: includes HTML formatting w/ css classes."
+          },
+          "graduateDegreeAdditionalRequirements": {
+            "type": "string",
+            "description": "Set of degree requirements for grad plans from academic advising requirement tables."
+          },
+          "owners": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "percentOwned": {
+                  "type": "string",
+                  "description": "Percentage ownership for this department"
+                },
+                "departmentAcadOrg": {
+                  "type": "string",
+                  "description": "Acad org code for department"
+                },
+                "departmentDescription": {
+                  "type": "string",
+                  "description": "Description of department"
+                },
+                "collegeAcadOrg": {
+                  "type": "string",
+                  "description": "college level (org tree level 3) acad org code containing this department"
+                },
+                "collegeDescription": {
+                  "type": "string",
+                  "description": "Description of college"
+                },
+                "collegeUrl": {
+                  "type": "string",
+                  "description": "URL for college"
+                }
+              }
+            },
+            "description": "List of department owner(s) for plan"
+          },
+          "degreeType": {
+            "type": "string",
+            "description": "Categorization of plan by degree type: UG = Undergraduate degrees UGCM = Non-graduate/non-law certificates (incl. standalone certificates) and minors GR = Graduate and Law OTHR = Other; plans that don't meet criteria for above"
+          },
+          "applicationDeadlines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "campus": {
+                  "type": "string"
+                },
+                "session": {
+                  "type": "string",
+                  "description": "Session code eg. REG, SESA, SESB"
+                },
+                "strm": {
+                  "type": "string"
+                },
+                "strmDescription": {
+                  "type": "string"
+                },
+                "applicationAcceptStartDate": {
+                  "type": "string"
+                },
+                "applicationAcceptEndDate": {
+                  "type": "string"
+                },
+                "sessionEndDate": {
+                  "type": "string"
+                },
+                "priorityApplicationDeadlineDate": {
+                  "type": "string"
+                },
+                "termBeginDate": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Application deadlines for the plan, per campus/session/term/admitType"
+          },
+          "additionalDeadlines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "term": {
+                  "type": "string",
+                  "description": "Term code: S = Spring, F = Fall, U = Summer"
+                },
+                "termDescription": {
+                  "type": "string",
+                  "description": " description of term code"
+                },
+                "session": {
+                  "type": "string",
+                  "description": "Session code: A (session A/C) or B "
+                },
+                "sessionDescription": {
+                  "type": "string",
+                  "description": "description of session code"
+                },
+                "modality": {
+                  "type": "string",
+                  "description": "I (in-person) or O (online)"
+                },
+                "modalityDescription": {
+                  "type": "string",
+                  "description": "description of modality code"
+                },
+                "deadlineDate": {
+                  "type": "string",
+                  "description": "deadline date for application in YYYY-MM-DD format"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Deadline type code:F (final) or P (priority)"
+                },
+                "typeDescription": {
+                  "type": "string",
+                  "description": "description of deadline type code"
+                }
+              }
+            },
+            "description": "Additional/alternate application deadline data for some GRAD plans - shows in degree search under headline of Application Deadlines For GRAD only (but not all GRAD)"
+          },
+          "majorMapGeneral": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "defaultFlag": {
+                  "type": "string",
+                  "description": "Term code: S = Spring, F = Fall, U = Summer"
+                },
+                "acadSubPlanCode": {
+                  "type": "string"
+                },
+                "timePeriod": {
+                  "type": "string"
+                },
+                "timePeriodDescription": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "example": "link to info about coursework (usually)"
+                },
+                "campus": {
+                  "type": "string",
+                  "description": "eg ALL or ONLNE.. note: not PS campus .. "
+                },
+                "categoryType": {
+                  "type": "string",
+                  "description": "category type of the record"
+                }
+              }
+            }
+          },
+          "majorMapSubplans": {
+            "type": "string",
+            "description": "LIST - Same fields as majorMapGeneral above, but with different grouping logic."
+          },
+          "majorMapOnline": {
+            "type": "string",
+            "description": "LIST - Same fields as majorMapGeneral above, but with different grouping logic."
+          }
+        }
+      }
+    }
+  }
+}
